@@ -17,26 +17,31 @@ module RailsAdmin
 
         register_instance_option :controller do
           Proc.new do
-            model_cloner  = RailsAdminClone::ModelCloner.new(@object)
-            custom_method = model_config.clone_config.custom_method
+            # model_cloner  = RailsAdminClone::ModelCloner.new(@object)
+            # custom_method = model_config.clone_config.custom_method
+            #
+            # if custom_method.present?
+            #   @object = model_cloner.method_clone(custom_method)
+            # else
+            #   @object = model_cloner.default_clone
+            # end
 
-            if custom_method.present?
-              @object = model_cloner.method_clone(custom_method)
-            else
-              @object = model_cloner.default_clone
-            end
+            # @authorization_adapter && @authorization_adapter.attributes_for(:new, @abstract_model).each do |name, value|
+            #   next if name == :_id
+            #   @object.send("#{name}=", value)
+            # end
+            #
+            # if object_params = params[@abstract_model.to_param]
+            #   @object.set_attributes(@object.attributes.merge(object_params))
+            # end
+            #
+            #
 
-            @authorization_adapter && @authorization_adapter.attributes_for(:new, @abstract_model).each do |name, value|
-              @object.send("#{name}=", value)
-            end
-
-            if object_params = params[@abstract_model.to_param]
-              @object.set_attributes(@object.attributes.merge(object_params))
-            end
+            @object = @object.clone
 
             respond_to do |format|
               format.html { render @action.template_name }
-              format.js   { render @action.template_name, :layout => false }
+              format.js { render @action.template_name, :layout => false }
             end
           end
         end
